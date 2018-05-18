@@ -1,4 +1,6 @@
 package com.smeznar.coachbook;
 
-public class Picture {
+import io.realm.RealmObject;
+
+public class Picture extends RealmObject {
 }

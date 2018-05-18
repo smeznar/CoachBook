@@ -1,4 +1,6 @@
 package com.smeznar.coachbook;
 
-public class Exercise {
+import io.realm.RealmObject;
+
+public class Exercise extends RealmObject {
 }
