@@ -9,17 +9,16 @@ public class Exercise extends RealmObject {
     private String mName;
     private String mDescription;
     private int mLevel;
-    private String getmDescription;
 
-    public Exercise(long mId, String mName, String mDescription, int mLevel, String getmDescription) {
+    public Exercise(long mId, String mName, String mDescription, int mLevel) {
         this.mId = mId;
         this.mName = mName;
         this.mDescription = mDescription;
         this.mLevel = mLevel;
-        this.getmDescription = getmDescription;
     }
 
     public Exercise(){
+
     }
 
     public long getmId() {
@@ -52,13 +51,5 @@ public class Exercise extends RealmObject {
 
     public void setmLevel(int mLevel) {
         this.mLevel = mLevel;
-    }
-
-    public String getGetmDescription() {
-        return getmDescription;
-    }
-
-    public void setGetmDescription(String getmDescription) {
-        this.getmDescription = getmDescription;
     }
 }
