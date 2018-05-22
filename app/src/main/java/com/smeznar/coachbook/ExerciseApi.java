@@ -8,11 +8,14 @@ import com.smeznar.coachbook.models.Category;
 import com.smeznar.coachbook.models.Exercise;
 import com.smeznar.coachbook.models.Exercise_Category;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class ExerciseApi {
     private Realm mRealmDatabase;
@@ -22,6 +25,21 @@ public class ExerciseApi {
         mContext = context;
         RealmConfiguration config = new RealmConfiguration.Builder().name("exercise.realm").build();
         mRealmDatabase = Realm.getInstance(config);
+    }
+
+    public boolean createFromJson(){
+        mRealmDatabase.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                InputStream inputStream = mContext.getResources().openRawResource(R.raw.categories);
+                try {
+                    mRealmDatabase.createAllFromJson(Category.class,inputStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return true;
     }
 
     public Category createCategory(String name, String description){
@@ -74,6 +92,16 @@ public class ExerciseApi {
 
     public boolean createPicture(Bitmap bitmap,int order,long exerciseId){
         return true;
+    }
+
+    public List<Category> getCategories(){
+        try {
+            RealmResults<Category> categoryResults = mRealmDatabase.where(Category.class).findAll().sort("mCategoryName", Sort.ASCENDING);
+            return new ArrayList<>(mRealmDatabase.copyFromRealm(categoryResults));
+        } catch (Exception e){
+            Log.e("ERROR ExerciseApi",e.getMessage());
+            return null;
+        }
     }
 
     public boolean onClose(){

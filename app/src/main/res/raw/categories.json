@@ -1,0 +1,18 @@
+[
+  {
+    "mCategoryName": "Strength",
+    "mCategoryDescription": "Strength exercises"
+  },
+  {
+    "mCategoryName": "Endurance",
+    "mCategoryDescription": "Endurance exercises"
+  },
+  {
+    "mCategoryName": "Cardio",
+    "mCategoryDescription": "Cardio exercises"
+  },
+  {
+    "mCategoryName": "Balance",
+    "mCategoryDescription": "Balance exercises"
+  }
+]

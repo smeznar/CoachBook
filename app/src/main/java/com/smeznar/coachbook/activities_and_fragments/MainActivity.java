@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.smeznar.coachbook.ExerciseApi;
 import com.smeznar.coachbook.R;
 
 
@@ -28,21 +29,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // Setup drawer view
+        mDrawer = findViewById(R.id.drawer_layout);
 
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
         setupDrawerContent(nvDrawer);
         configureToolbar();
 
-
 //        data = new ExerciseApi(this);
-//        data.createCategory("Cardio","Cardio exercises");
-//        data.onClose();
+//        data.createFromJson();
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -62,19 +58,15 @@ public class MainActivity extends AppCompatActivity {
         Class fragmentClass;
         switch (menuItem.getItemId()) {
             case R.id.nav_first_fragment:
-                Log.d("nav1", "nav1");
                 fragmentClass = ExerciseFragment.class;
                 break;
             case R.id.nav_second_fragment:
-                Log.d("nav1", "nav1");
                 fragmentClass = ExerciseFragment.class;
                 break;
             case R.id.nav_third_fragment:
-                Log.d("nav1", "nav1");
                 fragmentClass = ExerciseFragment.class;
                 break;
             default:
-                Log.d("nav1", "nav1");
                 fragmentClass = ExerciseFragment.class;
         }
 
