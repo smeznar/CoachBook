@@ -12,14 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.smeznar.coachbook.CategoriesRecyclerAdapter;
+import com.smeznar.coachbook.adapters.CategoriesRecyclerAdapter;
 import com.smeznar.coachbook.ExerciseApi;
 import com.smeznar.coachbook.R;
 import com.smeznar.coachbook.models.Category;
 
 import java.util.List;
 
-public class ExerciseFragment extends Fragment {
+public class ExerciseFragment extends Fragment{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -36,7 +36,6 @@ public class ExerciseFragment extends Fragment {
     List<Category> getNames(){
         try{
             List<Category> names;
-            api = new ExerciseApi(getContext());
             names = api.getCategories();
             return names;
         } catch (Exception e){
@@ -50,6 +49,7 @@ public class ExerciseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
+        getApi();
         createCategoryBtn = view.findViewById(R.id.buttonCreateCategory);
         createCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,5 +73,14 @@ public class ExerciseFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+    }
+
+    private void getApi(){
+        try {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            api = mainActivity.getApi();
+        } catch (Exception e){
+            Log.e("ERROR ExerciseFragment",e.getMessage());
+        }
     }
 }

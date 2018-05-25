@@ -19,11 +19,12 @@ import com.smeznar.coachbook.R;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private ExerciseApi data;
+    private ExerciseApi data;
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,17 @@ public class MainActivity extends AppCompatActivity {
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
         configureToolbar();
+        data = new ExerciseApi(this);
 
-//        data = new ExerciseApi(this);
+        Fragment fragment = null;
+        try{
+            fragment = (Fragment) ExerciseFragment.class.newInstance();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
 //        data.createFromJson();
     }
 
@@ -57,14 +67,17 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         Class fragmentClass;
         switch (menuItem.getItemId()) {
-            case R.id.nav_first_fragment:
+            case R.id.nav_profile:
+                fragmentClass = ProfileFragment.class;
+                break;
+            case R.id.nav_exercises:
                 fragmentClass = ExerciseFragment.class;
                 break;
-            case R.id.nav_second_fragment:
-                fragmentClass = ExerciseFragment.class;
+            case R.id.nav_settings:
+                fragmentClass = SettingsFragment.class;
                 break;
-            case R.id.nav_third_fragment:
-                fragmentClass = ExerciseFragment.class;
+            case R.id.nav_about:
+                fragmentClass = AboutFragment.class;
                 break;
             default:
                 fragmentClass = ExerciseFragment.class;
@@ -77,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         // Highlight the selected item has been done by NavigationView
@@ -99,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
             Log.e("ERROR Toolbar",e.getMessage());
         }
 
+    }
+
+    public ExerciseApi getApi(){
+        return data;
     }
 
     @Override
