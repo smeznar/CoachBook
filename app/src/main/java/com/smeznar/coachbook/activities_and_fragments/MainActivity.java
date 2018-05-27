@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = null;
         try{
-            fragment = (Fragment) ExerciseFragment.class.newInstance();
+            fragment = (Fragment) SelectCategoryFragment.class.newInstance();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = ProfileFragment.class;
                 break;
             case R.id.nav_exercises:
-                fragmentClass = ExerciseFragment.class;
+                fragmentClass = SelectCategoryFragment.class;
                 break;
             case R.id.nav_settings:
                 fragmentClass = SettingsFragment.class;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = AboutFragment.class;
                 break;
             default:
-                fragmentClass = ExerciseFragment.class;
+                fragmentClass = SelectCategoryFragment.class;
         }
 
         try {
