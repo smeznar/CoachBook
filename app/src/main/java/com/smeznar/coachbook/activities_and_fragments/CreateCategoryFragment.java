@@ -1,20 +1,21 @@
 package com.smeznar.coachbook.activities_and_fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.smeznar.coachbook.ExerciseApi;
+import com.smeznar.coachbook.API.ExerciseApi;
 import com.smeznar.coachbook.R;
 
 public class CreateCategoryFragment extends Fragment {
-    // The onCreateView method is called when Fragment should create its View object hierarchy,
-    // either dynamically or via XML layout inflation.
+
     private ExerciseApi api;
     Button buttonCreate;
     Button buttonBack;
@@ -23,21 +24,16 @@ public class CreateCategoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create_category, container, false);
-
-        // Replace 'android.R.id.list' with the 'id' of your RecyclerView
-
-        return view;
+        return inflater.inflate(R.layout.fragment_create_category, container, false);
     }
 
-
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         getApi();
         editTextName = view.findViewById(R.id.text_name);
         editTextDescription = view.findViewById(R.id.text_description);
+        editTextDescription.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editTextDescription.setRawInputType(InputType.TYPE_CLASS_TEXT);
         buttonBack = view.findViewById(R.id.btn_back);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,8 +59,15 @@ public class CreateCategoryFragment extends Fragment {
         //TODO: check if name and description are valid
         String name = editTextName.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        //Log.d(name,description);
-        api.createCategory(name,description);
-        getActivity().onBackPressed();
+        if(name.equals("") || description.equals("")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("both category name and it's description are required")
+                    .setTitle("ENTER ALL DATA");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            api.createCategory(name, description);
+            getActivity().onBackPressed();
+        }
     }
 }

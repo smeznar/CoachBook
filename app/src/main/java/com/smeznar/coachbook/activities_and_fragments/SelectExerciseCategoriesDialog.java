@@ -26,7 +26,7 @@ public class SelectExerciseCategoriesDialog extends Dialog implements
     private List<Category> mCategoryList;
     private View.OnClickListener onClickListener;
 
-    public SelectExerciseCategoriesDialog(Activity activity, List<Category> mCategoryList) {
+    SelectExerciseCategoriesDialog(Activity activity, List<Category> mCategoryList) {
         super(activity);
         this.mCategoryList = mCategoryList;
     }
@@ -56,7 +56,7 @@ public class SelectExerciseCategoriesDialog extends Dialog implements
         List<Category> token = new ArrayList<>();
         for (int i = 0; i < mCategoryList.size(); i++) {
             ExerciseCategoriesRecyclerAdapter.MyViewHolder view = (ExerciseCategoriesRecyclerAdapter.MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
-            if (view.isChecked()){
+            if (view.isChecked()) {
                 token.add(view.item);
             }
         }

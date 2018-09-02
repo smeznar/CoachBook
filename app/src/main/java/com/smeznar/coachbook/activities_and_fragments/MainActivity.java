@@ -1,20 +1,24 @@
 package com.smeznar.coachbook.activities_and_fragments;
 
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.smeznar.coachbook.ExerciseApi;
+import com.google.firebase.auth.FirebaseAuth;
+import com.smeznar.coachbook.API.DatabaseHelper;
+import com.smeznar.coachbook.API.ExerciseApi;
 import com.smeznar.coachbook.R;
+import com.smeznar.coachbook.interfaces.IOnDatabaseChangedListener;
+
+import io.realm.Realm;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,30 +29,35 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private FragmentManager fragmentManager;
+    private DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setup drawer view
         mDrawer = findViewById(R.id.drawer_layout);
 
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        nvDrawer = findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
         configureToolbar();
-        data = new ExerciseApi(this);
+        mDatabaseHelper = new DatabaseHelper(this, new IOnDatabaseChangedListener() {
+            @Override
+            public void onDatabaseChanged(Realm realm) {
+                data.setDatabase(realm);
+            }
+        });
+        data = new ExerciseApi(mDatabaseHelper.getDatabase());
 
         Fragment fragment = null;
         try{
-            fragment = (Fragment) SelectCategoryFragment.class.newInstance();
+            fragment = SelectCategoryFragment.class.newInstance();
         } catch (Exception e){
             e.printStackTrace();
         }
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-//        data.createFromJson();
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -63,9 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
-        Class fragmentClass;
+        Class fragmentClass = SelectCategoryFragment.class;
         switch (menuItem.getItemId()) {
             case R.id.nav_profile:
                 fragmentClass = ProfileFragment.class;
@@ -79,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_about:
                 fragmentClass = AboutFragment.class;
                 break;
-            default:
-                fragmentClass = SelectCategoryFragment.class;
+            case R.id.nav_sign_out:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                break;
         }
 
         try {
@@ -89,38 +99,32 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Insert the fragment by replacing any existing fragment
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-        // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
         setTitle(menuItem.getTitle());
-        // Close the navigation drawer
         mDrawer.closeDrawers();
     }
 
     private void configureToolbar() {
         try{
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            ActionBar actionbar = getSupportActionBar();
-            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-            actionbar.setDisplayHomeAsUpEnabled(true);
+            ActionBar actionbar;
+            actionbar = getSupportActionBar();
+            if (actionbar != null) {
+                actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+                actionbar.setDisplayHomeAsUpEnabled(true);
+            }
         } catch (Exception e){
             Log.e("ERROR Toolbar",e.getMessage());
         }
 
     }
 
-    public ExerciseApi getApi(){
-        return data;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
@@ -130,10 +134,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        //mRealm.close();
+    public DatabaseHelper getDatabaseHelper() {
+        return mDatabaseHelper;
     }
 
+    public ExerciseApi getApi(){
+        return data;
+    }
 
 }

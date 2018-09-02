@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.smeznar.coachbook.CustomItemClickListener;
 import com.smeznar.coachbook.R;
+import com.smeznar.coachbook.interfaces.ICustomItemClickListener;
 import com.smeznar.coachbook.models.Category;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.List;
 public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRecyclerAdapter.MyViewHolder> {
 
     private List<Category> mCategoryList;
-    private CustomItemClickListener mListener;
+    private ICustomItemClickListener mListener;
 
-    public CategoriesRecyclerAdapter(List<Category> categoriesList, CustomItemClickListener listener) {
+    public CategoriesRecyclerAdapter(List<Category> categoriesList, ICustomItemClickListener listener) {
         this.mCategoryList = categoriesList;
         mListener = listener;
     }
@@ -28,7 +28,7 @@ public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRe
 
         public MyViewHolder(View view) {
             super(view);
-            categoryName = (TextView) view.findViewById(R.id.category_text_view);
+            categoryName = view.findViewById(R.id.category_text_view);
         }
 
     }
@@ -45,12 +45,14 @@ public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRe
         final Category category = mCategoryList.get(position);
         holder.categoryName.setText(category.getmCategoryName());
         holder.item = category;
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        if(!holder.itemView.hasOnClickListeners()){
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onItemClick(v, holder.getAdapterPosition());
-            }
+                    mListener.onItemClick(v, holder.getAdapterPosition());
+                }
         });
+        }
     }
 
     @Override
